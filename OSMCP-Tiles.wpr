@@ -1,0 +1,26 @@
+#!wing
+#!version=4.0
+##################################################################
+# Wing IDE project file                                          #
+##################################################################
+[project attributes]
+proj.file-list = [loc('caches.py'),
+                  loc('caches.txt'),
+                  loc('check_cache.py'),
+                  loc('check_tc.py'),
+                  loc('colorado.txt'),
+                  loc('combine_tc.py'),
+                  loc('index.html'),
+                  loc('mirror_tnm.py'),
+                  loc('mktransparent.sh'),
+                  loc('mk_seed_co.py'),
+                  loc('optitile.sh'),
+                  loc('optitilej.sh'),
+                  loc('opti_drg.sh'),
+                  loc('tcr.cgi'),
+                  loc('tc_optimize.sh'),
+                  loc('test.html'),
+                  loc('test_tcr.html'),
+                  loc('TileMath.py'),
+                  loc('usability.html')]
+proj.file-type = 'shared'

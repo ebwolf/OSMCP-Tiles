@@ -1,0 +1,121 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head> 
+    <title>OSMCP Tile Cache Usability Test</title> 
+    <script src="http://openlayers.org/dev/OpenLayers.js"></script> 
+    <script type="text/javascript"> 
+        var map;
+        function init() {
+            map = new OpenLayers.Map('map', {
+                    //displayProjection: new OpenLayers.Projection("EPSG:4326")
+            });
+
+            var naip_navtc_cgi = new OpenLayers.Layer.XYZ( "NAIP cgi",
+                    [
+            "http://navtc.er.usgs.gov/tilecache.cgi/1.0.0/naip/${z}/${x}/${y}.jpeg"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(naip_navtc_cgi);
+
+            var naip_navtc_pt = new OpenLayers.Layer.XYZ( "NAIP pass-thru",
+                    [
+            "http://navtc.er.usgs.gov/naip/${z}/${x}/${y}.jpeg"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(naip_navtc_pt);
+
+            var drg_navtc_cgi = new OpenLayers.Layer.XYZ( "DRG cgi",
+                    [
+            "http://navtc.er.usgs.gov/tilecache.cgi/1.0.0/drg/${z}/${x}/${y}.png"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(drg_navtc_cgi);
+
+            var drg_navtc_pt = new OpenLayers.Layer.XYZ( "DRG pass-thru",
+                    [
+            "http://navtc.er.usgs.gov/drg/${z}/${x}/${y}.png"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(drg_navtc_pt);
+
+
+            var tnm_navtc_cgi = new OpenLayers.Layer.XYZ( "TNM CGI",
+                    [
+	            "http://navtc.er.usgs.gov/tilecache.cgi/1.0.0/tnm/${z}/${x}/${y}.png"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(tnm_navtc_cgi);
+
+
+            var tnm_navtc_pt = new OpenLayers.Layer.XYZ( "TNM Pass Thru",
+                    [
+	            "http://navtc.er.usgs.gov/tnm/${z}/${x}/${y}.png"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(tnm_navtc_pt);
+            
+
+            var tnm_direct_layer = new OpenLayers.Layer.XYZ( "TNM Direct Small Scale",
+                    [
+                    "http://basemap.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Small/MapServer/tile/${z}/${y}/${x}.png"
+                    ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 16
+                    });
+            map.addLayer(tnm_direct_layer);
+            
+
+            var features = new OpenLayers.Layer.OSM( "TNM Overlay",
+                    [
+ 	            //"http://navigator.er.usgs.gov/tiles/tilecache.py/1.0.0/tnm/${z}/${x}/${y}.png"
+ 	            "http://basemap.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Small/MapServer/tile/${z}/${y}/${x}.png"
+                     ],
+                    {
+                      visibility: false,
+                      numZoomLevels: 16
+                    });
+            features.setIsBaseLayer(false);
+            map.addLayer(features);
+
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+            map.addControl(new OpenLayers.Control.MousePosition());
+            map.addControl(new OpenLayers.Control.Permalink());
+            if (!map.getCenter()) {
+              map.setCenter(new OpenLayers.LonLat(-10860270.176801,4847982.2810906), 5);
+            }
+            
+            map.events.register("mousemove", map, function (e) {
+                var position = e.map.getLonLatFromViewPortPx(e.xy);
+                    OpenLayers.Util.getElement("tooltip").innerHTML =
+                    "<label>Latitude: " + position.lat +
+                    "</label><br/><label>Longitude: " + position.lon +
+                    "</label>";
+                    });
+        }
+        
+        
+    </script> 
+  </head> 
+  <body onload="init()"> 
+    <div id="map" class="smallmap"></div> 
+  </body> 
+</html> 
