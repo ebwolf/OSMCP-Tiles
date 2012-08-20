@@ -24,3 +24,51 @@ def WGS84toTileXY(lat, lon, zoom):
     ytile = (1.0 - log(tan(radians(lat)) + (1 / cos(radians(lat)))) / pi) / 2.0 * n
 
     return (int(xtile), int(ytile))
+
+# Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
+def PixelsToMeters(px, py, zoom):
+
+    # tileSize = 256
+    # radiusEarth = 6378137 meters
+    #
+    # R0 = 2 * math.pi * radiusEarth / tileSize
+    # R0 = 156543.03392804062
+    r0 = 156543.03392804062
+
+    # originShift = 2 * math.pi * radiusEarth / 2.0
+    os = 20037508.342789244
+
+    # res = R0 / (2**zoom)
+    res = r0 / (2**zoom)
+            
+    mx = px * res - os
+    my = py * res - os
+    return mx, my
+                                         
+
+# Returns bounds of the given tile in EPSG:900913 coordinates
+def TileXYZtoGoogle(tx, ty, zoom):
+    tileSize = 256
+    radiusEarth = 6378137 # meters
+    
+    # initial resolution
+    r0 = 2 * pi * radiusEarth / tileSize
+    # R0 = 156543.03392804062
+    #r0 = 156543.0339
+
+    # origin shift
+    os = 2 * pi * radiusEarth / 2.0
+    #os = 20037508.34
+
+    # res = R0 / (2**zoom)
+    res = r0 / (2**zoom)
+
+    #ty = 2** zoom - 1 - ty # Expects TMS y coordinate
+    ty = (2** zoom - 1) - ty # Expects TMS y coordinate
+    
+    minx = tx * 256 * res - os
+    miny = ty * 256 * res - os
+    maxx = (tx + 1) * 256 * res - os
+    maxy = (ty + 1) * 256 * res - os
+    
+    return ( minx, miny, maxx, maxy )
