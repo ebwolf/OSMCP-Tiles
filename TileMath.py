@@ -1,5 +1,15 @@
 # import just what we need from math - this keeps the syntax clean
-from math import pi, log, exp, atan, tan, cos, radians
+from math import pi, log, exp, atan, tan, cos, radians, floor
+
+# Safely computes the secant of r
+def sec(r):
+    c = cos(r)
+    
+    if c == 0:
+        c = 0.001
+        
+    return(1 / c)
+        
 
 # Takes lat/lon and returns a Google EPSG:900913 coordinate pair
 def WGS84toGoogle(lon, lat):
@@ -20,10 +30,19 @@ def GoogletoWGS84(x, y):
 # Takes lat/lon in WGS84 + zoom level and returns the X, Y for the tile
 def WGS84toTileXY(lat, lon, zoom):
     n = 2.0 ** zoom
-    xtile = (lon + 180.0) / 360.0 * n
-    ytile = (1.0 - log(tan(radians(lat)) + (1 / cos(radians(lat)))) / pi) / 2.0 * n
-
-    return (int(xtile), int(ytile))
+    xtile = ((lon + 180.0) / 360.0) * n
+    
+    rlat = radians(lat)
+#    t = tan(rlat)
+#    s = secant(rlat)
+#    print t, s
+#    l = log(t + s)
+#    l = l / pi
+#    l = 1.0 - l
+#    ytile = (1.0 - (log( tan(radians(lat)) + secant(radians(lat)) )  / pi)) / 2.0 * n
+#    ytile = l / 2 * n 
+    ytile = (1.0 - log(tan(rlat) + (1 / cos(rlat))) / pi) / 2.0 * n
+    return (int(floor(xtile)), int(floor(ytile)))
 
 # Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
 def PixelsToMeters(px, py, zoom):
@@ -72,3 +91,14 @@ def TileXYZtoGoogle(tx, ty, zoom):
     maxy = (ty + 1) * 256 * res - os
     
     return ( minx, miny, maxx, maxy )
+    
+# Unit tests
+if __name__ == '__main__':
+    import sys, os
+    (x,y) = WGS84toTileXY(0, 0, 1)
+    print "WGS84toTileXY(0,0,1) -> (" + str(x) + "," + str(y) + ")"
+    (x,y) = WGS84toTileXY(89, 179, 1)
+    print "WGS84toTileXY(89,179,1) -> (" + str(x) + "," + str(y) + ")"
+    (x,y) = WGS84toTileXY(-89, -179, 1)
+    print "WGS84toTileXY(-89,-179,1) -> (" + str(x) + "," + str(y) + ")"
+    

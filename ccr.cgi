@@ -78,20 +78,22 @@ from PIL import Image, ImageEnhance
 import cStringIO
 import urllib2
 
-tnmrsp = urllib2.urlopen(tnm)
-tnm_im = Image.open(cStringIO.StringIO(tnmrsp.read()))
-
-naiprsp = urllib2.urlopen(naip)
-naip_im = Image.open(cStringIO.StringIO(naiprsp.read()))
-
-
 # Make a greyscale image to blend with
 gs = Image.new('RGB', (256,256), (128,128,128))
 
-im = Image.blend(naip_im, gs, .4)
-#en = ImageEnhance.Brightness(naip_im)
-#im = en.enhance(1.5)
-im.paste(tnm_im, (0, 0), tnm_im)
+try:
+  naiprsp = urllib2.urlopen(naip)
+  naip_im = Image.open(cStringIO.StringIO(naiprsp.read()))
+  im = Image.blend(naip_im, gs, .4)
+except:
+  im = gs
+  
+try:
+  tnmrsp = urllib2.urlopen(tnm)
+  tnm_im = Image.open(cStringIO.StringIO(tnmrsp.read()))
+  im.paste(tnm_im, (0, 0), tnm_im)
+except:
+  burp = 1
 
 fp = r
 if not os.path.exists(fp):
