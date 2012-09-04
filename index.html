@@ -18,6 +18,14 @@
                     });
             map.addLayer(combo_layer);
 
+            var tcr_layer = new OpenLayers.Layer.XYZ( "TNM CGI",
+                    [ "/tiles/tcr.cgi/${z}/${x}/${y}" ],
+                    { 
+                      sphericalMercator: true,
+                      numZoomLevels: 20
+                    });
+            map.addLayer(tcr_layer);
+
 
 
             var naip_osmcp_cgi = new OpenLayers.Layer.XYZ( "NAIP CGI",
