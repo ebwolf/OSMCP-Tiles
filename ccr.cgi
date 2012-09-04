@@ -35,7 +35,7 @@ z = parts[l]
 
 
 # Large scales redirect to NAIP
-if int(z) > 15:
+if int(z) > 17:
   tc = 'http://' + s + '/tiles/tilecache.cgi/1.0.0/naip/' + z + '/' + x + '/' + y + '.jpeg'
 
   loc = "Location:     " + tc + "\r\n\r"
@@ -68,11 +68,10 @@ else:
 
 
 # Get the TNM tile from TCR.CGI - tcr takes z-x-y
-tnm = 'http://' + s + '/tiles/tcr.cgi' + "/" + z + "/" + x + "/" + y + ".png"
+tnm = 'http://' + s + '/tiles/tcr.cgi' + "/" + z + "/" + x + "/" + y
 
 # Get the NAIP tile from NAIP.CGI
-#naip = 'http://' + s + '/tiles/tilecache.cgi/1.0.0/naip' + "/" + z + "/" + x + "/" + y + ".jpeg"
-naip = 'http://' + s + '/tiles/naip.cgi' + "/" + z + "/" + x + "/" + y + ".jpeg"
+naip = 'http://' + s + '/tiles/naip.cgi' + "/" + z + "/" + x + "/" + y
 
 from PIL import Image, ImageEnhance
 import cStringIO
@@ -90,9 +89,18 @@ except:
   
 try:
   tnmrsp = urllib2.urlopen(tnm)
-  tnm_im = Image.open(cStringIO.StringIO(tnmrsp.read()))
+  
+#  if int(z) < 16: 
+  tnm_im = Image.open(cStringIO.StringIO(tnmrsp.read())).convert('RGBA')
+#  else:
+#    tf = "/tiles/tnm/" + z + "/" + x + "/" + y + ".png"
+#    tnm_im = Image.open(tf)
+#    sys.stderr.write(tf)
+  #if tnm_im.palette is None: 
+  #  tnm_im = tnm_im.convert('P')
   im.paste(tnm_im, (0, 0), tnm_im)
 except:
+  print "FAILED on TNM: " + tnm
   burp = 1
 
 fp = r
@@ -119,6 +127,6 @@ im.save(fp, quality=50, optimize=True, progressive=True)
 loc = "http://" + s + fp
     
 print "Location:     " + loc + "\r\n\r"
-loc = 'COMBO: ' + loc + '\n'
+loc = 'COMBO MISS: ' + loc + '\n'
 sys.stderr.write(loc)
   

@@ -49,21 +49,18 @@ if int(z) < 16:
 # TNM Vector Basemap Large Scale Local TileCache
 tc = r + '/' + z + '/' + x + '/' + y + '.png'
 
+tc8 = tc + '8'  
+if os.path.exists(tc8):
+  os.rename(tc8, tc);
+
 if os.path.exists(tc):
   loc = "http://" + s + tc
   print "Location:     " + loc + '\r\n\r'
-  loc = 'HIT: ' + loc
+  loc = 'HIT: ' + loc + '\n'
   sys.stderr.write(loc)
   sys.exit(0)
 
-tc = tc + '8'  
-if os.path.exists(tc):
-  loc = "http://" + s + tc
-  print "Location:     " + loc + '\r\n\r'
-  loc = 'HIT: ' + loc
-  sys.stderr.write(loc)
-  sys.exit(0)
-
+  
 # Some portion of the path/file doesn't exist
 tc = r + '/' + z
 if not os.path.exists(tc):
@@ -73,15 +70,14 @@ tc = tc + '/' + x
 if not os.path.exists(tc):
   os.makedirs(tc)
 
-url = 'http://services.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Large/MapServer/export?bboxSR=3857&size=256%2C256&format=png&transparent=true&f=image&imageSR=3857&bbox='
+url = 'http://services.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Large/MapServer/export?bboxSR=3857&size=256%2C256&format=png&transparent=true&f=image&imageSR=3857&'
+#url += 'layers=exclude:25,26,31,56,57&'
+url += 'bbox='
   
 # bbox=-11220955.751%2C5915002.99496%2C-11220344.2548%2C5915614.49119
 
 import TileMath
 
-#check = x + ',' + y + ',' + z
-#sys.stderr.write(check)
-  
 (a,b,c,d) = TileMath.TileXYZtoGoogle(int(x),int(y),int(z))
   
 bbox = str(a) + '%2C' + str(b) + '%2C' + str(c) + '%2C' + str(d)
@@ -95,6 +91,6 @@ urllib.urlretrieve(src, dst)
 loc = 'http://' + s + dst
 
 print "Location:     " + loc + "\r\n\r"
-loc = 'TNM: ' + loc + '\n'
+loc = 'MISS: ' + loc + '\n'
 sys.stderr.write(loc)
 sys.exit(0)
