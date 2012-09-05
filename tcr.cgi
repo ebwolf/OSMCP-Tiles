@@ -7,7 +7,10 @@
 # tile caches based on the zoom level.
 #
 
-import sys, os, imghdr
+import sys, os, imghdr, time
+
+start = time.time()
+
 
 # Switch server names as needed
 s = os.environ['SERVER_NAME']
@@ -42,7 +45,8 @@ if int(z) < 16:
   loc = tnm + "/" + z + "/" + y + "/" + x + ".png" 
   
   print "Location:     " + loc + "\r\n\r"
-  loc = 'TNM: ' + loc + '\n'
+  elapsed = "%0.03f"%(time.time() - start)
+  loc = elapsed + ' TNM: ' + loc + '\n'
   sys.stderr.write(loc)
   sys.exit(0)
 
@@ -56,7 +60,9 @@ if os.path.exists(tc8):
 if os.path.exists(tc):
   loc = "http://" + s + tc
   print "Location:     " + loc + '\r\n\r'
-  loc = 'HIT: ' + loc + '\n'
+
+  elapsed = "%0.03f"%(time.time() - start)
+  loc = elapsed + ' HIT: ' + loc + '\n'
   sys.stderr.write(loc)
   sys.exit(0)
 
@@ -70,7 +76,8 @@ tc = tc + '/' + x
 if not os.path.exists(tc):
   os.makedirs(tc)
 
-url = 'http://services.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Large/MapServer/export?bboxSR=3857&size=256%2C256&format=png&transparent=true&f=image&imageSR=3857&'
+url = 'http://services.nationalmap.gov/ArcGIS/rest/services/transportation/MapServer/export?bboxSR=3857&size=256%2C256&format=png&transparent=true&f=image&imageSR=3857&'
+#url = 'http://services.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Large/MapServer/export?bboxSR=3857&size=256%2C256&format=png&transparent=true&f=image&imageSR=3857&'
 #url += 'layers=exclude:25,26,31,56,57&'
 url += 'bbox='
   
@@ -91,6 +98,9 @@ urllib.urlretrieve(src, dst)
 loc = 'http://' + s + dst
 
 print "Location:     " + loc + "\r\n\r"
-loc = 'MISS: ' + loc + '\n'
+
+
+elapsed = "%0.03f"%(time.time() - start)
+loc = elapsed + ' MISS: ' + loc + '\n'
 sys.stderr.write(loc)
 sys.exit(0)

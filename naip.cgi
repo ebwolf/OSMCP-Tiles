@@ -7,7 +7,9 @@
 # tile caches based on the zoom level.
 #
 
-import os, sys
+import os, sys, time
+
+start = time.time()
 
 # Get the URI to parse
 p = os.environ['REQUEST_URI']
@@ -46,5 +48,6 @@ else:
   loc = tc + "/" + z + "/" + x + "/" + y
 
 print "Location:     " + loc + "\r\n\r"
-loc = 'NAIP: ' + loc + '\n'
+elapsed = "%0.03f"%(time.time() - start)
+loc = elapsed + ' NAIP: ' + loc + '\n'
 sys.stderr.write(loc)

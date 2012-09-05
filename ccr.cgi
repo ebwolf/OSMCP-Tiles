@@ -5,7 +5,9 @@
 #
 # Combines NAIP and TNM into a single tile
 #
-import sys, os
+import sys, os, time
+
+start = time.time()
 
 # Switch server names as needed
 s = os.environ['SERVER_NAME']
@@ -42,7 +44,8 @@ if int(z) > 17:
   
   print loc
   
-  loc = 'NAIP: ' + loc + '\n'
+  elapsed = "%0.03f"%(time.time() - start)
+  loc = elapsed + ' NAIP: ' + loc + '\n'
   sys.stderr.write(loc) 
   
   sys.exit(0)
@@ -59,11 +62,12 @@ if os.path.exists(fp): # imghdr.what(fp) == 'jpeg':
   
   print loc
   
-  loc = 'COMBO HIT: ' + loc
+  elapsed = "%0.03f"%(time.time() - start)
+  loc = elapsed + ' COMBO HIT: ' + loc
   sys.stderr.write(loc) 
   sys.exit(0)
 else:
-  poop = "MISS: " + fp + '\n'
+  poop = "COMBO MISS: " + fp + '\n'
   sys.stderr.write(poop)
 
 
@@ -127,6 +131,7 @@ im.save(fp, quality=50, optimize=True, progressive=True)
 loc = "http://" + s + fp
     
 print "Location:     " + loc + "\r\n\r"
-loc = 'COMBO MISS: ' + loc + '\n'
+elapsed = "%0.03f"%(time.time() - start)
+loc = elapsed + ' COMBO MISS: ' + loc + '\n'
 sys.stderr.write(loc)
   
