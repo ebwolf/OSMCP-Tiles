@@ -1,5 +1,5 @@
 # import just what we need from math - this keeps the syntax clean
-from math import pi, log, exp, atan, tan, cos, radians, floor
+from math import pi, log, exp, atan, tan, cos, radians, floor, ceil
 
 # Safely computes the secant of r
 def sec(r):
@@ -91,6 +91,30 @@ def TileXYZtoGoogle(tx, ty, zoom):
     maxy = (ty + 1) * 256 * res - os
     
     return ( minx, miny, maxx, maxy )
+
+def GoogleZtoTileXY(mx, my, zoom):
+    tileSize = 256
+    radiusEarth = 6378137 # meters
+    
+    # initial resolution
+    r0 = 2 * pi * radiusEarth / tileSize
+    # R0 = 156543.03392804062
+    #r0 = 156543.0339
+
+    # origin shift
+    os = 2 * pi * radiusEarth / 2.0
+    #os = 20037508.34
+
+    # res = R0 / (2**zoom)
+    res = r0 / (2**zoom)
+
+    px = (mx + os) / res
+    py = (my + os) / res
+    
+    tx = int( ceil( px / float(256) ) - 1 )
+    ty = int( ceil( py / float(256) ) - 1 )
+    return tx, ty
+
     
 # Unit tests
 if __name__ == '__main__':
